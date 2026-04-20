@@ -223,7 +223,7 @@ def confirmar_pago():
 
     codigo = ''.join(random.choices(string.ascii_uppercase, k=5))
 
-    BASE_URL = "http://127.0.0.1:5000"
+    BASE_URL = request.host_url.rstrip('/')
 
     qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={BASE_URL}/boleto/{codigo}"
 
@@ -295,7 +295,7 @@ def ver_boleto_qr(codigo):
     salida_terminal = terminales.get(origen, f"Terminal de {origen}")
     llegada_terminal = terminales.get(destino, f"Terminal de {destino}")
 
-    BASE_URL = "https://TU-LINK.ngrok-free.app"
+    BASE_URL = request.host_url.rstrip('/')
 
     qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={BASE_URL}/boleto/{codigo}"
 
@@ -373,7 +373,7 @@ def descargar_pdf(codigo):
 
     # QR (imagen)
     import urllib.request
-    BASE_URL = "https://TU-LINK.ngrok-free.app"
+    BASE_URL = request.host_url.rstrip('/')
 
     qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={BASE_URL}/boleto/{codigo}"
 
