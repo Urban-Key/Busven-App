@@ -9,11 +9,14 @@ from reportlab.pdfgen import canvas
 import io
 from datetime import datetime
 
+
+from PIL import Image
+
 def generar_qr(data, codigo):
     qr = qrcode.QRCode(
         version=1,
         box_size=10,
-        border=2
+        border=4
     )
 
     qr.add_data(data)
@@ -22,7 +25,20 @@ def generar_qr(data, codigo):
     img = qr.make_image(
         fill_color="#2e3192",
         back_color="white"
+    ).convert('RGB')
+
+    logo = Image.open("static/logo.png")
+
+    # tamaño del logo
+    logo_size = 80
+    logo = logo.resize((logo_size, logo_size))
+
+    pos = (
+        (img.size[0] - logo_size) // 2,
+        (img.size[1] - logo_size) // 2
     )
+
+    img.paste(logo, pos)
 
     ruta = f"static/qr_{codigo}.png"
     img.save(ruta)
