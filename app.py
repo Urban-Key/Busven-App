@@ -311,14 +311,18 @@ def ver_boleto_qr(codigo):
     conn = get_db()
     c = conn.cursor()
 
-    c.execute("""
-        SELECT nombre, documento, origen, destino, fecha, hora
-        FROM boletos
-        if isinstance(conn, sqlite3.Connection):
-    c.execute("SELECT ... WHERE codigo = ?", (codigo,))
-else:
-    c.execute("SELECT ... WHERE codigo = %s", (codigo,))
-    """, (codigo,))
+    if isinstance(conn, sqlite3.Connection):
+        c.execute("""
+            SELECT nombre, documento, origen, destino, fecha, hora
+            FROM boletos
+            WHERE codigo = ?
+        """, (codigo,))
+    else:
+        c.execute("""
+            SELECT nombre, documento, origen, destino, fecha, hora
+            FROM boletos
+            WHERE codigo = %s
+        """, (codigo,))
 
     data = c.fetchone()
     conn.close()
@@ -356,14 +360,18 @@ def descargar_pdf(codigo):
     conn = get_db()
     c = conn.cursor()
 
-    c.execute("""
-        SELECT nombre, documento, origen, destino, fecha, hora
-        FROM boletos
-        if isinstance(conn, sqlite3.Connection):
-    c.execute("SELECT ... WHERE codigo = ?", (codigo,))
-else:
-    c.execute("SELECT ... WHERE codigo = %s", (codigo,))
-    """, (codigo,))
+    if isinstance(conn, sqlite3.Connection):
+        c.execute("""
+            SELECT nombre, documento, origen, destino, fecha, hora
+            FROM boletos
+            WHERE codigo = ?
+        """, (codigo,))
+    else:
+        c.execute("""
+            SELECT nombre, documento, origen, destino, fecha, hora
+            FROM boletos
+            WHERE codigo = %s
+        """, (codigo,))
 
     data = c.fetchone()
     conn.close()
