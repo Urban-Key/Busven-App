@@ -3,6 +3,8 @@ import sqlite3
 import random
 import qrcode
 import string
+import os
+import psycopg2
 from flask import make_response
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -32,11 +34,19 @@ def generar_qr(data, codigo):
 
 app = Flask(__name__)
 
+def get_db():
+    db_url = os.environ.get("DATABASE_URL")
+
+    if db_url:
+        return psycopg2.connect(db_url, sslmode='require')
+    else:
+        return sqlite3.connect("database.db")
+
 # =========================
 # BASE DE DATOS
 # =========================
 def init_db():
-    conn = sqlite3.connect('database.db')
+    conn = get_db()
     c = conn.cursor()
     c.execute('''
         CREATE TABLE IF NOT EXISTS boletos (
@@ -250,7 +260,7 @@ def confirmar_pago():
 
     qr = generar_qr(data, codigo)
 
-    conn = sqlite3.connect('database.db')
+    conn = get_db()
     c = conn.cursor()
 
     for i in range(len(nombres)):
@@ -298,13 +308,16 @@ def confirmar_pago():
 @app.route('/boleto/<codigo>')
 def ver_boleto_qr(codigo):
 
-    conn = sqlite3.connect('database.db')
+    conn = get_db()
     c = conn.cursor()
 
     c.execute("""
         SELECT nombre, documento, origen, destino, fecha, hora
         FROM boletos
-        WHERE codigo = ?
+        if isinstance(conn, sqlite3.Connection):
+    c.execute("SELECT ... WHERE codigo = ?", (codigo,))
+else:
+    c.execute("SELECT ... WHERE codigo = %s", (codigo,))
     """, (codigo,))
 
     data = c.fetchone()
@@ -340,13 +353,16 @@ def ver_boleto_qr(codigo):
 @app.route('/descargar_pdf/<codigo>')
 def descargar_pdf(codigo):
 
-    conn = sqlite3.connect('database.db')
+    conn = get_db()
     c = conn.cursor()
 
     c.execute("""
         SELECT nombre, documento, origen, destino, fecha, hora
         FROM boletos
-        WHERE codigo = ?
+        if isinstance(conn, sqlite3.Connection):
+    c.execute("SELECT ... WHERE codigo = ?", (codigo,))
+else:
+    c.execute("SELECT ... WHERE codigo = %s", (codigo,))
     """, (codigo,))
 
     data = c.fetchone()
