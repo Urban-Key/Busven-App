@@ -1,12 +1,33 @@
 from flask import Flask, render_template, request
 import sqlite3
 import random
+import qrcode
 import string
 from flask import make_response
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import io
 from datetime import datetime
+
+def generar_qr(data, codigo):
+    qr = qrcode.QRCode(
+        version=1,
+        box_size=10,
+        border=2
+    )
+
+    qr.add_data(data)
+    qr.make(fit=True)
+
+    img = qr.make_image(
+        fill_color="#2e3192",
+        back_color="white"
+    )
+
+    ruta = f"static/qr_{codigo}.png"
+    img.save(ruta)
+
+    return ruta
 
 app = Flask(__name__)
 
@@ -224,8 +245,9 @@ def confirmar_pago():
     codigo = ''.join(random.choices(string.ascii_uppercase, k=5))
 
     BASE_URL = request.host_url.rstrip('/')
+    data = f"{BASE_URL}/boleto/{codigo}"
 
-    qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={BASE_URL}/boleto/{codigo}"
+    qr = generar_qr(data, codigo)
 
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
@@ -266,7 +288,7 @@ def confirmar_pago():
         estado="ACTIVO",
         precio="Ref. 35,00",
         bs="Bs. 16.675,20",
-        qr=qr_url
+        qr=qr
     )
 
 # =========================
@@ -297,7 +319,7 @@ def ver_boleto_qr(codigo):
 
     BASE_URL = request.host_url.rstrip('/')
 
-    qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={BASE_URL}/boleto/{codigo}"
+    qr = f"/static/qr_{codigo}.png"
 
     return render_template(
         'ticket.html',
@@ -310,7 +332,7 @@ def ver_boleto_qr(codigo):
         fecha=fecha,
         hora=hora,
         codigo=codigo,
-        qr=qr_url,
+        qr=qr,
         estado="ACTIVO",
         precio="Ref. 35,00"
     )
@@ -375,10 +397,10 @@ def descargar_pdf(codigo):
     import urllib.request
     BASE_URL = request.host_url.rstrip('/')
 
-    qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={BASE_URL}/boleto/{codigo}"
+    qr = f"/static/qr_{codigo}.png"
 
     try:
-        urllib.request.urlretrieve(qr_url, "qr_temp.png")
+        p.drawImage(f"static/qr_{codigo}.png", 400, 460, 120, 120)
         p.drawImage("qr_temp.png", 400, 460, 120, 120)
     except:
         pass
