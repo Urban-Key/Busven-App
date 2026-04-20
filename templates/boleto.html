@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+    --azul: #2e3192;
+}
+
+body {
+    font-family: 'Segoe UI', Arial;
+    background: #eef0f5;
+}
+
+/* CONTENEDOR */
+.container {
+    max-width: 420px;
+    width: 420px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+/* HEADER */
+.header {
+    background: var(--azul);
+    color: white;
+    padding: 18px;
+    font-weight: bold;
+}
+.header-boleto {
+    padding-top: 10px;
+}
+
+/* TOP */
+.top-card {
+    background: #f3f4f8;
+    border-radius: 20px;
+    padding: 5px 20px 15px 20px; /* 🔥 menos espacio arriba */
+    padding-top: 10px;
+    margin: 15px;
+}
+
+/* LOGO */
+.logo {
+    text-align: center;
+    margin-bottom: 10px; /* 🔥 truco clave */
+}
+
+.logo img {
+    width: 180px;
+    display: block;
+    margin: 0 auto;
+}
+/* RUTA */
+.ruta {
+    display: flex;
+    align-items: flex-start; /* 🔥 cambia center por flex-start */
+    justify-content: space-between;
+}
+/* LADOS */
+.lado.derecha .terminal {
+    text-align: right;
+    word-break: break-word;
+}
+.lado {
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4px;
+    max-width: 140px; /* 🔥 CLAVE */
+}
+.lado.izquierda {
+    align-items: flex-start;
+}
+
+.lado.derecha {
+    align-items: flex-end;
+    text-align: right;
+}
+
+/* CIUDAD + ICONO */
+.ciudad-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.lado.derecha .ciudad-row {
+    flex-direction: row-reverse;
+}
+
+.ciudad {
+    color: var(--azul);
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 2px;
+}
+.icono {
+    width: 14px;
+}
+
+/* CENTRO */
+.centro {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.linea {
+    width: 100%;
+    height: 2px;
+    background: repeating-linear-gradient(
+        to right,
+        #ccc,
+        #ccc 6px,
+        transparent 6px,
+        transparent 10px
+    );
+    position: relative;
+}
+
+/* flecha */
+.linea::after {
+    content: "➜";
+    position: absolute;
+    right: -5px;
+    top: -6px;
+    color: var(--azul);
+    font-size: 14px;
+}
+
+.fecha {
+    background: #e9ecff;
+    padding: 4px 10px;
+    border-radius: 8px;
+    color: var(--azul);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+/* TERMINAL */
+.terminal {
+    min-height: 40px;
+    font-size: 11px;
+    color: #777;
+    margin-top: 5px;
+    line-height: 1.3;
+    display: block;
+}
+.terminal strong {
+    display: block;
+}
+.ruta-centro {
+    display: flex;
+    align-items: center;
+}
+/* DIVISOR */
+.divisor {
+    position: relative;
+    height: 20px;
+    margin: 20px 0;
+    background: linear-gradient(to bottom, transparent, #eef0f5, transparent);
+}
+
+.divisor::before,
+.divisor::after {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: #eef0f5;
+    border-radius: 50%;
+    top: -15px;
+}
+
+.divisor::before { left: -15px; }
+.divisor::after { right: -15px; }
+
+/* PASAJEROS */
+.card {
+    padding: 0 20px;
+}
+
+.fila {
+    display: flex;
+    justify-content: space-between;
+}
+
+.azul {
+    color: var(--azul);
+    font-weight: bold;
+}
+
+/* IMPORTANTE */
+.important {
+    background: #f6eddc;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 20px;
+    font-size: 13px;
+}
+
+/* ESTADO */
+.estado {
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.estado span {
+    background: #d9efe3;
+    padding: 8px 25px;
+    border-radius: 20px;
+    font-weight: bold;
+    color: var(--azul);
+}
+
+/* QR */
+.qr {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.qr img {
+    width: 140px;
+}
+
+/* BOX */
+.pago-box {
+    background: #f3f4f8;
+    border-radius: 15px;
+    padding: 15px;
+    margin: 15px;
+    text-align: left;
+}
+
+/* SOLO CODIGO CENTRADO */
+.codigo-box {
+    text-align: center;
+}
+
+.titulo {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.codigo {
+    font-size: 22px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    color: var(--azul);
+}
+
+.precio {
+    color: var(--azul);
+    font-weight: bold;
+}
+
+.check {
+    width: 35px;
+    height: 35px;
+    background: #6fcf97;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* BOTON */
+.btn-pdf {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #2e3192;
+    color: white;
+    padding: 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 15px;
+    transition: 0.2s;
+}
+
+.btn-pdf:hover {
+    background: #1f2270;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">← Detalle del boleto</div>
+
+<!-- TOP -->
+<div class="top-card">
+
+<div class="logo">
+<img src="{{ url_for('static', filename='logo.png') }}">
+</div>
+
+<div class="ruta">
+
+<!-- ORIGEN -->
+<div class="lado izquierda">
+    <div class="ciudad-row">
+        <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" class="icono">
+        <span class="ciudad">{{ origen }}</span>
+    </div>
+
+    <div class="terminal">
+        {{ salida_terminal }}
+    </div>
+</div>
+
+<!-- CENTRO -->
+<div class="centro">
+    <div class="fecha">
+        {{ fecha }}<br>
+        {{ hora }}
+    </div>
+    <div class="linea"></div>
+</div>
+
+<!-- DESTINO -->
+<div class="lado derecha">
+    <div class="ciudad-row">
+        <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" class="icono">
+        <span class="ciudad">{{ destino }}</span>
+    </div>
+
+    <div class="terminal">
+        {{ llegada_terminal }}
+    </div>
+</div>
+
+</div>
+</div>
+
+<div class="divisor"></div>
+
+<!-- PASAJEROS -->
+<div class="card">
+
+<div class="fila" style="font-weight:bold;">
+    <div>
+        Pasajero{% if nombres|length > 1 %}s{% endif %}
+    </div>
+    <div>
+        Documento{% if documentos|length > 1 %}s{% endif %}
+    </div>
+</div>
+
+<hr>
+
+{% for i in range(nombres|length) %}
+<div class="fila">
+<div class="azul">{{ nombres[i] }}</div>
+<div class="azul">{{ documentos[i] }}</div>
+</div>
+{% endfor %}
+
+</div>
+
+<div class="important">
+<b>IMPORTANTE:</b> Debes estar al menos 1 hora antes en el terminal
+</div>
+
+<div class="divisor"></div>
+
+<div class="estado">
+<span>{{ estado }}</span>
+</div>
+
+<div class="qr">
+<img src="{{ qr }}">
+</div>
+
+<div class="divisor"></div>
+
+<!-- CODIGO -->
+<div class="pago-box codigo-box">
+<div class="titulo">Código de reserva</div>
+<div class="codigo">{{ codigo }}</div>
+</div>
+
+<!-- PAGOS -->
+<div class="pago-box">
+
+<div style="display:flex; justify-content:space-between; align-items:center;">
+<div>
+<div class="titulo">Monto pagado</div>
+<div class="precio">{{ precio }}</div>
+</div>
+
+<div class="check">✓</div>
+</div>
+
+<hr>
+
+<div>
+<div class="titulo">Monto en Bs.</div>
+<div class="precio">{{ bs }}</div>
+</div>
+
+</div>
+
+<a href="/descargar_pdf/{{ codigo }}" class="btn-pdf">
+    Descargar boleto en PDF
+</a>
+
+</div>
+
+</body>
+</html>
