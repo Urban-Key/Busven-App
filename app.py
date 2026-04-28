@@ -321,19 +321,56 @@ def confirmar_pago():
     c = conn.cursor()
 
     for i in range(len(nombres)):
-        c.execute("""
-            INSERT INTO boletos (nombre, documento, correo, origen, destino, fecha, hora, codigo)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            nombres[i],
-            documentos[i],  # 🔥 ahora nunca falla
-            correo,
-            origen,
-            destino,
-            fecha,
-            hora,
-            codigo
-        ))
+
+        if isinstance(conn, sqlite3.Connection):
+
+            c.execute("""
+                INSERT INTO boletos (
+                    nombre,
+                    documento,
+                    correo,
+                    origen,
+                    destino,
+                    fecha,
+                    hora,
+                    codigo
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                nombres[i],
+                documentos[i],
+                correo,
+                origen,
+                destino,
+                fecha,
+                hora,
+                codigo
+            ))
+
+        else:
+
+            c.execute("""
+                INSERT INTO boletos (
+                    nombre,
+                    documento,
+                    correo,
+                    origen,
+                    destino,
+                    fecha,
+                    hora,
+                    codigo
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                nombres[i],
+                documentos[i],
+                correo,
+                origen,
+                destino,
+                fecha,
+                hora,
+                codigo
+            ))
 
     conn.commit()
     conn.close()
