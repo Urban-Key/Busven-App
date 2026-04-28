@@ -429,19 +429,20 @@ def ver_boleto_qr(codigo):
     llegada_terminal = terminales.get(destino, f"Terminal de {destino}")
 
     return render_template(
-        'ticket.html',
-        nombre=nombre,
-        documento=documento,
-        origen=origen,
-        destino=destino,
-        salida_terminal=salida_terminal,
-        llegada_terminal=llegada_terminal,
-        fecha=fecha,
-        hora=hora,
-        codigo=codigo,
-        estado="ACTIVO",
-        precio="Ref. 35,00"
-    )
+    'ticket.html',
+    nombres=[nombre],
+    documentos=[documento],
+    origen=origen,
+    destino=destino,
+    salida_terminal=salida_terminal,
+    llegada_terminal=llegada_terminal,
+    fecha=fecha,
+    hora=hora,
+    codigo=codigo,
+    estado="ACTIVO",
+    precio="Ref. 35,00"
+)
+
 @app.route('/descargar_pdf/<codigo>')
 def descargar_pdf(codigo):
 
@@ -509,8 +510,6 @@ def descargar_pdf(codigo):
     # QR (imagen)
     import urllib.request
     BASE_URL = request.host_url.rstrip('/')
-
-    qr = f"/static/qr_{codigo}.png"
 
     try:
         p.drawImage(f"{request.host_url}qr/{codigo}", 400, 460, 120, 120)
