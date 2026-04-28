@@ -64,6 +64,7 @@ def init_db():
                 correo TEXT,
                 origen TEXT,
                 destino TEXT,
+                asientos TEXT,
                 fecha TEXT,
                 hora TEXT,
                 codigo TEXT
@@ -80,6 +81,7 @@ def init_db():
                 correo TEXT,
                 origen TEXT,
                 destino TEXT,
+                asientos TEXT,
                 fecha TEXT,
                 hora TEXT,
                 codigo TEXT
@@ -296,7 +298,7 @@ def confirmar_pago():
     fecha = request.form.get("fecha")
     hora = request.form.get("hora")
     pasajeros = request.form.get("pasajeros")
-    asientos = request.form.get("asientos")
+    asientos = request.form.get("asientos", "No asignado")
 
     nombres = request.form.getlist("nombre[]")
     documentos = request.form.getlist("documento[]")
@@ -306,6 +308,7 @@ def confirmar_pago():
     # 🔴 DEBUG (déjalo temporalmente)
     print("NOMBRES:", nombres)
     print("DOCUMENTOS:", documentos)
+    print("ASIENTOS:", asientos)
 
     # 🛠️ CORRECCIÓN CLAVE: evitar desalineación
     if len(documentos) != len(nombres):
@@ -331,17 +334,19 @@ def confirmar_pago():
                     correo,
                     origen,
                     destino,
+                    asientos,
                     fecha,
                     hora,
                     codigo
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 nombres[i],
                 documentos[i],
                 correo,
                 origen,
                 destino,
+                asientos,
                 fecha,
                 hora,
                 codigo
@@ -360,7 +365,7 @@ def confirmar_pago():
                     hora,
                     codigo
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (
                 nombres[i],
                 documentos[i],
@@ -406,13 +411,13 @@ def ver_boleto_qr(codigo):
 
     if isinstance(conn, sqlite3.Connection):
         c.execute("""
-            SELECT nombre, documento, origen, destino, fecha, hora
+            SELECT nombre, documento, origen, destino, fecha, hora, asientos
             FROM boletos
             WHERE codigo = ?
         """, (codigo,))
     else:
         c.execute("""
-            SELECT nombre, documento, origen, destino, fecha, hora
+            SELECT nombre, documento, origen, destino, fecha, hora, asientos
             FROM boletos
             WHERE codigo = %s
         """, (codigo,))
@@ -423,7 +428,7 @@ def ver_boleto_qr(codigo):
     if not data:
         return "❌ Boleto no encontrado"
 
-    nombre, documento, origen, destino, fecha, hora = data
+    nombre, documento, origen, destino, fecha, hora, asientos = data
 
     salida_terminal = terminales.get(origen, f"Terminal de {origen}")
     llegada_terminal = terminales.get(destino, f"Terminal de {destino}")
@@ -440,7 +445,8 @@ def ver_boleto_qr(codigo):
     hora=hora,
     codigo=codigo,
     estado="ACTIVO",
-    precio="Ref. 35,00"
+    precio="Ref. 35,00",
+    asientos=asientos
 )
 
 @app.route('/descargar_pdf/<codigo>')
