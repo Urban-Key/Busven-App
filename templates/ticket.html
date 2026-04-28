@@ -1,244 +1,465 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ticket - Busven</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
 <style>
-body {
-    font-family: 'Segoe UI', Arial;
-    background: #e9ecf2;
+
+:root{
+    --green:#16a34a;
+    --green-dark:#15803d;
+    --green-light:#dcfce7;
+    --text:#111827;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --bg:#f3f4f6;
+    --card:#ffffff;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:var(--bg);
+    padding:30px 15px;
+    color:var(--text);
 }
 
 /* CONTENEDOR */
-.ticket {
-    width: 900px;
-    margin: 30px auto;
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+
+.ticket-wrapper{
+    max-width:520px;
+    margin:auto;
+}
+
+/* TARJETA */
+
+.ticket{
+    background:var(--card);
+    border-radius:28px;
+    overflow:hidden;
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.08),
+        0 5px 15px rgba(0,0,0,0.03);
 }
 
 /* HEADER */
-.header {
-    background: #2e3192;
-    color: white;
-    padding: 15px 20px;
-    font-size: 22px;
-    font-weight: bold;
+
+.header{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(
+        135deg,
+        #16a34a,
+        #15803d,
+        #166534
+    );
+    padding:28px 24px;
+    color:white;
+}
+
+.header::before{
+    content:"";
+    position:absolute;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    top:-120px;
+    right:-80px;
+}
+
+.brand{
+    position:relative;
+    z-index:2;
+}
+
+.logo{
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:.5px;
+}
+
+.logo span{
+    color:#bbf7d0;
+}
+
+.subtitle{
+    margin-top:5px;
+    font-size:13px;
+    opacity:.92;
 }
 
 /* BODY */
-.body {
-    padding: 20px;
-    position: relative;
-}
 
-/* MARCA DE AGUA */
-.body::before {
-    content: "";
-    position: absolute;
-    background: url("/static/logo.png") no-repeat center;
-    background-size: 300px;
-    opacity: 0.05;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-/* TOP */
-.top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* LOGO */
-.logo img {
-    width: 220px;
-    display: block;
+.content{
+    padding:24px;
 }
 
 /* QR */
-.qr-box {
-    border: 2px dashed #ccc;
-    padding: 10px;
-    border-radius: 10px;
-    background: #fff;
+
+.qr-section{
+    text-align:center;
 }
 
-.qr-box img {
-    width: 140px;
+.qr-box{
+    width:190px;
+    height:190px;
+    margin:auto;
+    background:white;
+    border-radius:24px;
+    padding:14px;
+    border:1px solid #dcfce7;
+    box-shadow:0 10px 25px rgba(22,163,74,0.08);
 }
 
-/* INFO */
-.info {
-    margin-top: 20px;
+.qr-box img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
 }
 
-.line {
-    border-bottom: 1px solid #ddd;
-    margin: 10px 0;
+.qr-text{
+    margin-top:14px;
+    font-size:13px;
+    color:var(--muted);
 }
 
-.row {
-    display: flex;
-    justify-content: space-between;
-    margin: 8px 0;
-    font-size: 16px;
+/* STATUS */
+
+.status{
+    display:flex;
+    justify-content:center;
+    margin-top:20px;
 }
 
-/* TABLA */
-.tabla {
-    margin-top: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    overflow: hidden;
+.status span{
+    background:var(--green-light);
+    color:var(--green-dark);
+    padding:10px 22px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:800;
 }
 
-.tabla div {
-    display: flex;
+/* DIVIDER */
+
+.divider{
+    height:1px;
+    background:var(--border);
+    margin:24px 0;
 }
 
-.tabla div span {
-    flex: 1;
-    padding: 12px;
-    border-bottom: 1px solid #eee;
+/* GRID */
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
 }
 
-.tabla div span:first-child {
-    font-weight: bold;
-    background: #f5f6fa;
-    width: 220px;
+.card{
+    background:#f9fafb;
+    border:1px solid #edf2f7;
+    border-radius:18px;
+    padding:16px;
 }
 
-/* ESTADO */
-.estado {
-    margin-top: 20px;
-    text-align: center;
+.label{
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:7px;
+    display:flex;
+    align-items:center;
+    gap:6px;
 }
 
-.estado span {
-    padding: 10px 30px;
-    border-radius: 20px;
-    font-weight: bold;
-    background: #d4f4dd;
-    color: #2e7d32;
+.value{
+    font-size:15px;
+    font-weight:800;
+    color:var(--text);
+    line-height:1.5;
+}
+
+/* PASAJERO */
+
+.passenger{
+    background:#f9fafb;
+    border:1px solid #edf2f7;
+    border-radius:20px;
+    padding:18px;
+    margin-top:18px;
+}
+
+.passenger-title{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.passenger-name{
+    font-size:18px;
+    font-weight:900;
+    color:var(--green-dark);
+}
+
+.passenger-doc{
+    margin-top:6px;
+    font-size:15px;
+    font-weight:700;
+    color:#166534;
+}
+
+/* RESERVA */
+
+.code-box{
+    margin-top:20px;
+    background:linear-gradient(
+        135deg,
+        #f0fdf4,
+        #ecfdf5
+    );
+    border:1px solid #dcfce7;
+    border-radius:22px;
+    padding:20px;
+    text-align:center;
+}
+
+.code-label{
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:8px;
+}
+
+.code{
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:3px;
+    color:var(--green);
 }
 
 /* FOOTER */
-.footer {
-    margin-top: 20px;
-    border-top: 2px dashed #ccc;
-    padding-top: 15px;
+
+.footer{
+    margin-top:24px;
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    border-radius:18px;
+    padding:16px;
+    font-size:13px;
+    line-height:1.6;
+    color:#92400e;
 }
 
 /* BOTON */
-.btn {
-    display: block;
-    width: 90%;
-    margin: 20px auto;
-    padding: 12px;
-    background: #2e3192;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-}
-</style>
 
+.print-btn{
+    display:block;
+    width:100%;
+    margin-top:24px;
+    border:none;
+    cursor:pointer;
+    background:linear-gradient(
+        135deg,
+        #16a34a,
+        #15803d
+    );
+    color:white;
+    padding:16px;
+    border-radius:18px;
+    font-size:15px;
+    font-weight:800;
+    transition:.2s;
+}
+
+.print-btn:hover{
+    transform:translateY(-2px);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:520px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .logo{
+        font-size:26px;
+    }
+
+    .code{
+        font-size:24px;
+    }
+
+    .qr-box{
+        width:160px;
+        height:160px;
+    }
+
+}
+
+</style>
 </head>
 
 <body>
 
+<div class="ticket-wrapper">
+
 <div class="ticket">
 
-<div class="header">
-    🎫 Ticket de Viaje
-</div>
+    <!-- HEADER -->
+    <div class="header">
 
-<div class="body">
+        <div class="brand">
 
-<!-- TOP -->
-<div class="top">
+            <div class="logo">
+                Bus<span>Ven</span>
+            </div>
 
-    <div class="logo">
-        <img src="{{ url_for('static', filename='logo.png') }}">
+            <div class="subtitle">
+                Ticket electrónico de validación
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="qr-box">
-    <img src="/qr/{{ codigo }}">
-</div>
+    <!-- CONTENIDO -->
+    <div class="content">
 
-</div>
+        <!-- QR -->
+        <div class="qr-section">
 
-<!-- INFO PASAJERO -->
-<div class="info">
+            <div class="qr-box">
+                <img src="/qr/{{ codigo }}">
+            </div>
 
-    <div class="row">
-        <div><b>Nombre:</b> {{ nombres[0] }}</div>
+            <div class="qr-text">
+                Presenta este código QR al abordar
+            </div>
+
+        </div>
+
+        <!-- ESTADO -->
+        <div class="status">
+            <span>{{ estado }}</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- DATOS -->
+        <div class="grid">
+
+            <div class="card">
+
+                <div class="label">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Origen
+                </div>
+
+                <div class="value">
+                    {{ origen }}
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="label">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Destino
+                </div>
+
+                <div class="value">
+                    {{ destino }}
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="label">
+                    <i class="fa-solid fa-calendar"></i>
+                    Fecha
+                </div>
+
+                <div class="value">
+                    {{ fecha }}
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="label">
+                    <i class="fa-solid fa-clock"></i>
+                    Hora
+                </div>
+
+                <div class="value">
+                    {{ hora }}
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- PASAJERO -->
+        <div class="passenger">
+
+            <div class="passenger-title">
+                <i class="fa-solid fa-user"></i>
+                Pasajero
+            </div>
+
+            <div class="passenger-name">
+                {{ nombres[0] }}
+            </div>
+
+            <div class="passenger-doc">
+                Documento: {{ documentos[0] }}
+            </div>
+
+        </div>
+
+        <!-- CODIGO -->
+        <div class="code-box">
+
+            <div class="code-label">
+                Código de reserva
+            </div>
+
+            <div class="code">
+                {{ codigo }}
+            </div>
+
+        </div>
+
+        <!-- AVISO -->
+        <div class="footer">
+
+            <b>IMPORTANTE:</b>
+            Este ticket debe presentarse al personal autorizado
+            antes de abordar la unidad de transporte.
+
+        </div>
+
     </div>
 
-    <div class="line"></div>
-
-    <div class="row">
-        <div><b>C.I:</b> {{ documentos[0] }}</div>
 </div>
-
-</div>
-
-<!-- TABLA -->
-<div class="tabla">
-
-    <div>
-        <span>Hora de salida</span>
-        <span>{{ hora }}</span>
-    </div>
-
-    <div>
-        <span>Fecha</span>
-        <span>{{ fecha }}</span>
-    </div>
-
-    <div>
-        <span>Ruta</span>
-        <span>{{ origen }} ➜ {{ destino }}</span>
-    </div>
-
-    <div>
-        <span>Puesto</span>
-        <span>{{ asientos }}</span>
-    </div>
-
-    <div>
-        <span>Bus</span>
-        <span>005</span>
-    </div>
-
-</div>
-
-<!-- ESTADO -->
-<div class="estado">
-    <span>{{ estado }}</span>
-</div>
-
-<!-- FOOTER -->
-<div class="footer">
-
-    <div class="row">
-        <div><b>Código:</b> {{ codigo }}</div>
-        <div><b>Pago:</b> {{ precio }}</div>
-    </div>
-
-</div>
-
-</div>
-
-<button onclick="window.print()" class="btn">
-Descargar / Imprimir PDF
-</button>
 
 </div>
 
