@@ -298,7 +298,7 @@ def confirmar_pago():
     fecha = request.form.get("fecha")
     hora = request.form.get("hora")
     pasajeros = request.form.get("pasajeros")
-    asientos = request.form.get("asientos", "No asignado")
+    asientos = request.form.get("asientos")
 
     nombres = request.form.getlist("nombre[]")
     documentos = request.form.getlist("documento[]")
