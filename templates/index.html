@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BusVen</title>
+
+<!-- ICONOS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial;
+    background: #f4f6f9;
+    overflow-x: hidden;
+}
+
+/* LOGO FONDO MEJORADO */
+body::before {
+    content: "";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 900px;
+    height: 900px;
+    background: url('/static/logo.png') no-repeat center;
+    background-size: contain;
+    opacity: 0.12; /* 🔥 ahora sí visible */
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+/* HERO */
+.hero {
+    text-align: center;
+    color: white;
+    margin-top: 60px;
+    z-index: 1;
+    position: relative;
+    animation: fadeDown 1s ease;
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: 34px;
+}
+
+.hero p {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+/* CAJA */
+.search-box {
+    width: 95%;
+    margin-top: 30px;
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 1s ease;
+}
+
+/* FILA */
+.row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* INPUTS */
+.input-box {
+    background: #f1f3f6;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 12px;
+    flex: 1;
+    transition: 0.2s;
+}
+
+.input-box:focus-within {
+    box-shadow: 0 0 0 2px #2e3192;
+}
+
+label {
+    font-size: 13px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+input, select {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    background: transparent;
+    margin-top: 5px;
+}
+
+/* PASAJEROS */
+.counter-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f1f3f6;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 12px;
+}
+
+.counter-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.counter-controls button {
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 8px;
+    background: #2e3192;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.counter-controls button:hover {
+    transform: scale(1.1);
+}
+
+/* BOTON */
+.btn {
+    background: #22c55e;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 260px;
+    font-weight: bold;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #16a34a;
+    transform: scale(1.03);
+}
+.center {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* ERROR */
+.error {
+    color: red;
+    font-size: 13px;
+    margin-top: 5px;
+    display: none;
+}
+
+/* ANIMACIONES */
+@keyframes fadeUp {
+    from {opacity: 0; transform: translateY(30px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+@keyframes fadeDown {
+    from {opacity: 0; transform: translateY(-30px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+/* HEADER PRO */
+.header{
+    display:flex;
+    align-items:center;
+    padding:15px 30px;
+    background:#fff;
+    border-bottom:1px solid #eee;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.logo{
+    font-weight:700;
+    font-size:22px;
+}
+.logo span{
+    color:#22c55e;
+}
+
+.title{
+    display:flex;
+    flex-direction:column;
+}
+.title strong{
+    font-size:16px;
+}
+.title span{
+    font-size:13px;
+    color:#64748b;
+}
+
+/* STEPS */
+.steps{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding:15px;
+    background:#fff;
+    border-bottom:1px solid #eee;
+}
+
+.steps::before{
+    content:"";
+    position:absolute;
+    top:50%;
+    left:5%;
+    width:90%;
+    height:2px;
+    background:#e5e7eb;
+    z-index:0;
+}
+
+.step{
+    position:relative;
+    z-index:1;
+    padding:8px 14px;
+    border-radius:20px;
+    background:#e5e7eb;
+    font-size:13px;
+    color:#6b7280;
+}
+
+.step.active{
+    background:#22c55e;
+    color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER NUEVO -->
+<div class="header">
+    <div class="header-left">
+
+        <div class="logo">Bus<span>ven</span></div>
+
+        <div class="title">
+            <strong>Reserva tu viaje</strong>
+            <span>Compra rápida, segura y confiable</span>
+        </div>
+
+    </div>
+</div>
+
+<!-- STEPS -->
+<div class="steps">
+    <div class="step active">1. Ruta</div>
+    <div class="step">2. Horario</div>
+    <div class="step">3. Pasajeros</div>
+    <div class="step">4. Pago</div>
+</div>
+
+<div class="search-box">
+
+<form onsubmit="return validar()" action="/viajes" method="POST">
+
+<div class="row">
+
+    <div class="input-box">
+        <label><i class="fa-solid fa-bus"></i> Origen</label>
+        <select id="origen" name="origen" onchange="actualizarDestinos()">
+    <option value="">Seleccionar origen</option>
+    <option value="Cúcuta">Cúcuta, Norte de Santander, Colombia</option>
+    <option value="San Cristóbal">San Cristóbal, Táchira, Venezuela</option>
+    <option value="Caracas">Caracas, Venezuela</option>
+    <option value="Mérida">Mérida, Venezuela</option>
+    <option value="Maracaibo">Maracaibo, Zulia, Venezuela</option>
+</select>
+        <div class="error" id="errorOrigen">Selecciona un origen</div>
+    </div>
+
+    <div class="input-box">
+        <label><i class="fa-solid fa-location-dot"></i> Destino</label>
+        <select id="destino" name="destino">
+            <option value="">Seleccionar destino</option>
+        </select>
+        <div class="error" id="errorDestino">Selecciona un destino</div>
+    </div>
+
+</div>
+
+<div class="input-box">
+    <label><i class="fa-solid fa-calendar"></i> Fecha de viaje</label>
+    <input type="date" id="fecha" name="fecha">
+    <div class="error" id="errorFecha">Selecciona una fecha válida</div>
+</div>
+
+<div class="counter-box">
+    <span><i class="fa-solid fa-user"></i> Pasajeros</span>
+
+    <div class="counter-controls">
+        <button type="button" onclick="cambiar(-1)">-</button>
+        <span id="num">1</span>
+        <button type="button" onclick="cambiar(1)">+</button>
+    </div>
+</div>
+
+<input type="hidden" name="pasajeros" id="pasajerosHidden" value="1">
+
+<div class="center">
+    <button class="btn" type="submit">Buscar viaje</button>
+</div>
+
+</form>
+
+</div>
+
+<script>
+let total = 1;
+
+function cambiar(valor) {
+    total += valor;
+    if (total < 1) total = 1;
+
+    document.getElementById("num").innerText = total;
+    document.getElementById("pasajerosHidden").value = total;
+}
+
+/* RUTAS */
+const rutas = {
+    "Cúcuta": ["San Cristóbal"],
+    "San Cristóbal": ["Cúcuta", "Caracas", "Mérida", "Maracaibo"],
+    "Caracas": ["San Cristóbal"],
+    "Mérida": ["San Cristóbal"],
+    "Maracaibo": ["San Cristóbal"]
+};
+
+const nombres = {
+    "Cúcuta": "Cúcuta, Norte de Santander, Colombia",
+    "San Cristóbal": "San Cristóbal, Táchira, Venezuela",
+    "Caracas": "Caracas, Venezuela",
+    "Mérida": "Mérida, Venezuela",
+    "Maracaibo": "Maracaibo, Zulia, Venezuela"
+};
+
+function actualizarDestinos() {
+    const origen = document.getElementById("origen").value;
+    const destino = document.getElementById("destino");
+
+    destino.innerHTML = '<option value="">Seleccionar destino</option>';
+
+    if (rutas[origen]) {
+        rutas[origen].forEach(ciudad => {
+            let option = document.createElement("option");
+            option.value = ciudad;
+            option.textContent = nombres[ciudad];
+            destino.appendChild(option);
+        });
+    }
+}
+
+/* VALIDACIONES */
+function validar() {
+    let ok = true;
+
+    let origen = document.getElementById("origen").value;
+    let destino = document.getElementById("destino").value;
+    let fecha = document.getElementById("fecha").value;
+
+    document.querySelectorAll(".error").forEach(e => e.style.display = "none");
+
+    if (!origen) {
+        document.getElementById("errorOrigen").style.display = "block";
+        ok = false;
+    }
+
+    if (!destino) {
+        document.getElementById("errorDestino").style.display = "block";
+        ok = false;
+    }
+
+    if (!fecha) {
+        document.getElementById("errorFecha").style.display = "block";
+        ok = false;
+    }
+
+    return ok;
+}
+</script>
+
+</body>
+</html>

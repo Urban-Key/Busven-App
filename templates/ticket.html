@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<style>
+body {
+    font-family: 'Segoe UI', Arial;
+    background: #e9ecf2;
+}
+
+/* CONTENEDOR */
+.ticket {
+    width: 900px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* HEADER */
+.header {
+    background: #2e3192;
+    color: white;
+    padding: 15px 20px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* BODY */
+.body {
+    padding: 20px;
+    position: relative;
+}
+
+/* MARCA DE AGUA */
+.body::before {
+    content: "";
+    position: absolute;
+    background: url("/static/logo.png") no-repeat center;
+    background-size: 300px;
+    opacity: 0.05;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* TOP */
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* LOGO */
+.logo img {
+    width: 220px;
+    display: block;
+}
+
+/* QR */
+.qr-box {
+    border: 2px dashed #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.qr-box img {
+    width: 140px;
+}
+
+/* INFO */
+.info {
+    margin-top: 20px;
+}
+
+.line {
+    border-bottom: 1px solid #ddd;
+    margin: 10px 0;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+/* TABLA */
+.tabla {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.tabla div {
+    display: flex;
+}
+
+.tabla div span {
+    flex: 1;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.tabla div span:first-child {
+    font-weight: bold;
+    background: #f5f6fa;
+    width: 220px;
+}
+
+/* ESTADO */
+.estado {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.estado span {
+    padding: 10px 30px;
+    border-radius: 20px;
+    font-weight: bold;
+    background: #d4f4dd;
+    color: #2e7d32;
+}
+
+/* FOOTER */
+.footer {
+    margin-top: 20px;
+    border-top: 2px dashed #ccc;
+    padding-top: 15px;
+}
+
+/* BOTON */
+.btn {
+    display: block;
+    width: 90%;
+    margin: 20px auto;
+    padding: 12px;
+    background: #2e3192;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="ticket">
+
+<div class="header">
+    🎫 Ticket de Viaje
+</div>
+
+<div class="body">
+
+<!-- TOP -->
+<div class="top">
+
+    <div class="logo">
+        <img src="{{ url_for('static', filename='logo.png') }}">
+    </div>
+
+    <div class="qr-box">
+    <img src="{{ qr }}">
+</div>
+
+</div>
+
+<!-- INFO PASAJERO -->
+<div class="info">
+
+    <div class="row">
+        <div><b>Nombre:</b> {{ nombres[0] }}</div>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="row">
+        <div><b>C.I:</b> {{ documentos[0] }}</div>
+</div>
+
+</div>
+
+<!-- TABLA -->
+<div class="tabla">
+
+    <div>
+        <span>Hora de salida</span>
+        <span>{{ hora }}</span>
+    </div>
+
+    <div>
+        <span>Fecha</span>
+        <span>{{ fecha }}</span>
+    </div>
+
+    <div>
+        <span>Ruta</span>
+        <span>{{ origen }} ➜ {{ destino }}</span>
+    </div>
+
+    <div>
+        <span>Puesto</span>
+        <span>{{ asientos }}</span>
+    </div>
+
+    <div>
+        <span>Bus</span>
+        <span>005</span>
+    </div>
+
+</div>
+
+<!-- ESTADO -->
+<div class="estado">
+    <span>{{ estado }}</span>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+
+    <div class="row">
+        <div><b>Código:</b> {{ codigo }}</div>
+        <div><b>Pago:</b> {{ precio }}</div>
+    </div>
+
+</div>
+
+</div>
+
+<button onclick="window.print()" class="btn">
+Descargar / Imprimir PDF
+</button>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Busven - Pago</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+body{
+    font-family:'Segoe UI';
+    background:#f4f6f9;
+    margin:0;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:15px 30px;
+    background:#fff;
+    border-bottom:1px solid #eee;
+}
+
+.logo{
+    font-weight:700;
+    font-size:20px;
+}
+.logo span{color:#22c55e;}
+
+.back{
+    width:35px;height:35px;
+    border-radius:50%;
+    background:#f1f5f9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+
+/* PASOS */
+.steps{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:20px 0;
+}
+.step{
+    padding:6px 12px;
+    border-radius:20px;
+    background:#e5e7eb;
+    font-size:12px;
+}
+.active{
+    background:#22c55e;
+    color:#fff;
+}
+
+/* LAYOUT */
+.container{
+    display:grid;
+    grid-template-columns:1fr 300px;
+    gap:30px;
+    max-width:900px;
+    margin:auto;
+}
+
+/* CARD */
+.card{
+    background:#fff;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+/* INPUTS */
+input{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ddd;
+    margin-top:8px;
+}
+
+/* BOTON */
+.btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#22c55e;
+    color:#fff;
+    cursor:pointer;
+    margin-top:15px;
+}
+
+/* RESUMEN */
+.summary{
+    background:linear-gradient(135deg,#4f46e5,#4338ca);
+    color:#fff;
+    padding:20px;
+    border-radius:12px;
+}
+
+/* METODOS */
+.payment-methods{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+
+.pay-btn{
+    flex:1;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#f1f5f9;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.pay-btn.active{
+    background:#22c55e;
+    color:#fff;
+}
+
+/* BINANCE BOX */
+.crypto-box{
+    background:#111827;
+    color:#fff;
+    padding:15px;
+    border-radius:10px;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="logo">Bus<span>ven</span></div>
+    <div class="back" onclick="history.back()">
+        <i class="fa fa-arrow-left"></i>
+    </div>
+</div>
+
+<div class="steps">
+    <div class="step">1. Ruta</div>
+    <div class="step">2. Horario</div>
+    <div class="step">3. Asientos</div>
+    <div class="step">4. Datos</div>
+    <div class="step active">5. Pago</div>
+</div>
+
+<div class="container">
+
+<!-- IZQUIERDA -->
+<div>
+
+<div class="card">
+    <b><i class="fa fa-credit-card"></i> Método de pago</b>
+
+    <div class="payment-methods">
+        <button class="pay-btn active" onclick="selectMethod('card',this)">
+            <i class="fa fa-credit-card"></i>
+        </button>
+
+        <button class="pay-btn" onclick="selectMethod('transfer',this)">
+            <i class="fa fa-building-columns"></i>
+        </button>
+
+        <button class="pay-btn" onclick="selectMethod('cash',this)">
+            <i class="fa fa-money-bill-wave"></i>
+        </button>
+
+        <button class="pay-btn" onclick="selectMethod('crypto',this)">
+            <i class="fa-brands fa-bitcoin"></i>
+        </button>
+    </div>
+
+    <!-- TARJETA -->
+    <div id="cardForm">
+        <input placeholder="Número de tarjeta">
+        <input placeholder="Nombre en la tarjeta">
+        <div style="display:flex;gap:10px">
+            <input placeholder="MM/AA">
+            <input placeholder="CVV">
+        </div>
+    </div>
+
+    <!-- TRANSFERENCIA -->
+    <div id="transferForm" style="display:none;">
+        <p>Realiza una transferencia a:</p>
+        <b>Banco: Bancolombia</b><br>
+        <b>Cuenta: 123456789</b><br>
+        <b>Titular: Busven</b>
+    </div>
+
+    <!-- EFECTIVO -->
+    <div id="cashForm" style="display:none;">
+        <p>Paga en terminal o agencia más cercana.</p>
+    </div>
+
+    <!-- BINANCE -->
+    <div id="cryptoForm" style="display:none;">
+        <div class="crypto-box">
+            <b><i class="fa-brands fa-bitcoin"></i> Pago con Binance (USDT)</b>
+            <p>Envía el monto a:</p>
+            <b>Wallet:</b><br>
+            0xA1B2C3D4E5F6G7H8<br><br>
+            <small>Red: TRC20</small>
+        </div>
+    </div>
+
+</div>
+
+<div class="card">
+    <b><i class="fa fa-user"></i> Datos del comprador</b>
+    <input placeholder="Correo electrónico">
+    <form action="/confirmar_pago" method="POST">
+
+<input type="hidden" name="origen" value="{{ origen }}">
+<input type="hidden" name="destino" value="{{ destino }}">
+<input type="hidden" name="fecha" value="{{ fecha }}">
+<input type="hidden" name="hora" value="{{ hora }}">
+<input type="hidden" name="pasajeros" value="{{ pasajeros }}">
+<input type="hidden" name="asientos" value="{{ asientos }}">
+
+{% for n in nombres %}
+<input type="hidden" name="nombre[]" value="{{ n }}">
+{% endfor %}
+
+{% for d in documentos %}
+<input type="hidden" name="documento[]" value="{{ d }}">
+{% endfor %}
+
+<input type="hidden" name="correo" value="{{ correo }}">
+
+<button class="btn" type="submit">
+    Confirmar pago
+</button>
+
+</form>
+</div>
+
+</div>
+
+<!-- DERECHA -->
+<div class="summary">
+    <h3>{{ origen }} → {{ destino }}</h3>
+    <p>{{ fecha }} | {{ hora }}</p>
+    <p><b>Pasajero:</b> <span>{{ nombres[0] }}</span></p>
+    <p><b>Asientos:</b> <span>{{ asientos }}</span></p>
+
+    <hr style="opacity:.2">
+
+    <h2>{{ bs }}</h2>
+    <small>{{ precio }}</small>
+</div>
+
+</div>
+
+<script>
+function selectMethod(method,btn){
+
+    document.getElementById("cardForm").style.display="none";
+    document.getElementById("transferForm").style.display="none";
+    document.getElementById("cashForm").style.display="none";
+    document.getElementById("cryptoForm").style.display="none";
+
+    if(method==="card") document.getElementById("cardForm").style.display="block";
+    if(method==="transfer") document.getElementById("transferForm").style.display="block";
+    if(method==="cash") document.getElementById("cashForm").style.display="block";
+    if(method==="crypto") document.getElementById("cryptoForm").style.display="block";
+
+    document.querySelectorAll(".pay-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+}
+
+</script>
+
+</body>
+</html>

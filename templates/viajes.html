@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Viajes</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6fb;
+    margin: 0;
+}
+
+/* CONTENEDOR */
+.container {
+    max-width: 750px;
+    margin: 30px auto;
+}
+
+/* CARD */
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    border: 1px solid #eee;
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.time {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2d3e8b;
+}
+
+.route {
+    font-size: 13px;
+    color: #666;
+}
+
+.terminal {
+    font-size: 12px;
+    color: #999;
+}
+
+.price {
+    text-align: right;
+}
+
+.bs {
+    color: green;
+    font-weight: bold;
+}
+
+.usd {
+    font-size: 12px;
+    color: gray;
+}
+
+/* BOTÓN */
+.btn {
+    margin-top: 8px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+/* MODAL */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
+
+    z-index: 9999;
+}
+
+.modal-content {
+    width: 400px;
+    max-width: 90%;
+
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+
+    animation: aparecerModal 0.25s ease;
+}
+
+@keyframes aparecerModal {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    background: linear-gradient(90deg, #3b3bb3, #5b6dfc);
+    color: white;
+    padding: 14px 16px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-weight: 600;
+}
+
+.modal-body {
+    padding:18px;
+}
+
+/* VISUAL */
+.route-visual {
+    display:flex;
+    align-items:center;
+    margin:20px 0;
+}
+
+.linea {
+    flex:1;
+    height:2px;
+    background:#ddd;
+}
+
+.punto {
+    width:10px;
+    height:10px;
+    border-radius:50%;
+}
+
+.salida { background:#22c55e; }
+.llegada { background:#ef4444; }
+
+.bus-icon {
+    width: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.bus-icon i {
+    animation: moverBus 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes moverBus {
+    from { transform: translateX(-3px); }
+    to { transform: translateX(3px); }
+}
+
+/* TEXTOS */
+.route-text {
+    display:flex;
+    justify-content:space-between;
+}
+
+.info-row {
+    display:flex;
+    justify-content:space-between;
+    margin:10px 0;
+    font-size:13px;
+    color:#555;
+}
+
+.terminales {
+    font-size:13px;
+    color:#666;
+}
+
+/* PRECIO */
+.price-box {
+    background:#eef2ff;
+    border-radius:12px;
+    padding:18px;
+    text-align:center;
+    margin-top:15px;
+}
+
+.price-main strong {
+    font-size:22px;
+    color:#16a34a;
+}
+
+/* BOTÓN CONFIRMAR */
+.btn-confirm {
+    width:100%;
+    margin-top:15px;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.btn-confirm:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* ===== CAJA DE PRECIO PRO ===== */
+
+.price-box {
+    background: linear-gradient(135deg, #eef2ff, #e6f7f5);
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 15px;
+}
+
+.price-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.price-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.price-main strong {
+    font-size: 22px;
+    color: #16a34a;
+}
+
+.price-main small {
+    display: block;
+    color: #777;
+}
+
+.price-badge {
+    background: linear-gradient(135deg, #3b82f6, #4f46e5);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+/* SERVICIOS */
+
+.features {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #555;
+}
+
+.features div {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+/* ===== TOP RUTA ===== */
+
+.top-route {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.linea-dashed {
+    flex: 1;
+    border-top: 1.5px dashed #ccc;
+}
+
+.punto {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.salida { background: #22c55e; }
+.llegada { background: #ef4444; }
+
+/* ===== CIUDADES ===== */
+
+.ciudades {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.ciudades strong {
+    font-size:14px;
+    display: block;
+}
+
+.ciudades span {
+    font-size: 11px;
+    color: #777;
+}
+
+/* ===== INFO BAR ===== */
+
+.info-bar {
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:#555;
+    margin:8px 0;
+    padding-bottom:8px;
+    border-bottom:1px solid #eee;
+}
+
+/* ===== TERMINALES ===== */
+
+.terminales {
+    font-size:12px;
+    color:#666;
+    margin:8px 0;
+}
+/* ===== TICKET BOX ===== */
+
+.ticket-box {
+    background: linear-gradient(135deg, #eef2ff, #e6f7f5);
+    border-radius:14px;
+    padding:14px; /* 🔥 menos padding */
+    margin-top:10px;
+}
+
+.ticket-header {
+    display: flex;
+    gap: 8px;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.ticket-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ticket-main strong {
+    font-size: 20px;
+    color: #16a34a;
+}
+
+.ticket-main small {
+    display: block;
+    color: #777;
+}
+
+.usd-badge {
+    background: linear-gradient(135deg, #3b82f6, #4f46e5);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+/* ===== SERVICIOS ===== */
+
+.servicios {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #555;
+}
+
+.servicios div {
+    margin-top: 4px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* ===== BOTÓN ===== */
+
+.btn-confirm {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+/* TERMINALES ESTILO APP */
+
+.terminal-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #555;
+    margin: 6px 0;
+}
+
+.terminal-item i {
+    color: #6b7280;
+    margin-top: 2px;
+    font-size: 14px;
+}
+
+@keyframes moverBus {
+    from {
+        transform: translateX(-5px);
+    }
+    to {
+        transform: translateX(5px);
+    }
+}
+
+.btn-seleccionar:active {
+    transform: scale(0.96);
+}
+
+.precio-bs {
+    font-size: 22px;
+    font-weight: bold;
+    color: #16a34a;
+}
+
+.precio-usd {
+    font-size: 13px;
+    color: #666;
+}
+.header{
+    display:flex;
+    align-items:center;
+    padding:15px 30px;
+    background:#fff;
+    border-bottom:1px solid #eee;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.logo{
+    font-weight:700;
+    font-size:22px;
+}
+.logo span{color:#22c55e;}
+
+.back{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f1f5f9;
+    cursor:pointer;
+}
+
+.title{
+    display:flex;
+    flex-direction:column;
+}
+.title strong{font-size:16px;}
+.title span{
+    font-size:13px;
+    color:#64748b;
+}
+
+/* STEPS */
+.steps{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding:15px;
+    background:#fff;
+    border-bottom:1px solid #eee;
+}
+
+.step{
+    padding:8px 14px;
+    border-radius:20px;
+    background:#e5e7eb;
+    font-size:13px;
+    color:#6b7280;
+}
+
+.step.active{
+    background:#22c55e;
+    color:#fff;
+}
+
+.step.done{
+    background:#bbf7d0;
+    color:#166534;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER NUEVO -->
+<div class="header">
+    <div class="header-left">
+        <div class="logo">Bus<span>ven</span></div>
+
+        <div class="back" onclick="window.history.back()">
+            <i class="fa fa-arrow-left"></i>
+        </div>
+
+        <div class="title">
+            <strong>Selecciona tu viaje</strong>
+            <span>Elige el horario disponible</span>
+        </div>
+    </div>
+</div>
+
+<!-- STEPS -->
+<div class="steps">
+    <div class="step done">1. Ruta</div>
+    <div class="step active">2. Horario</div>
+    <div class="step">3. Pasajeros</div>
+    <div class="step">4. Pago</div>
+</div>
+
+<div class="container">
+
+{% for viaje in viajes %}
+<div class="card">
+
+    <div>
+        <div class="route">{{ viaje.origen }} → {{ viaje.destino }}</div>
+        <div class="time">{{ viaje.hora }}</div>
+        <div class="terminal">{{ viaje.salida }} → {{ viaje.llegada }}</div>
+    </div>
+
+    <div>
+        <div class="price">
+            <div class="bs">Bs {{ viaje.precio_bs }}</div>
+            <div class="usd">$ {{ viaje.precio_usd }}</div>
+        </div>
+
+        <button class="btn"
+            data-origen="{{ viaje.origen }}"
+            data-destino="{{ viaje.destino }}"
+            data-hora="{{ viaje.hora }}"
+            data-salida="{{ viaje.salida }}"
+            data-llegada="{{ viaje.llegada }}"
+            data-bs="{{ viaje.precio_bs }}"
+            data-usd="{{ viaje.precio_usd }}"
+            onclick="abrirModal(this)">
+            Seleccionar
+        </button>
+    </div>
+
+</div>
+{% endfor %}
+
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <span>Detalle del viaje</span>
+            <span onclick="cerrarModal()" style="cursor:pointer;">✕</span>
+        </div>
+
+        <div class="modal-body">
+
+    <!-- RUTA VISUAL -->
+    <div class="top-route">
+
+        <div class="punto salida"></div>
+
+        <div class="linea-dashed"></div>
+
+        <div class="bus-icon">
+            <i class="fa-solid fa-bus"></i>
+        </div>
+
+        <div class="linea-dashed"></div>
+
+        <div class="punto llegada"></div>
+
+    </div>
+
+    <!-- CIUDADES -->
+    <div class="ciudades">
+        <div>
+            <strong id="m_origen"></strong>
+            <span>Salida</span>
+        </div>
+
+        <div class="hora-llegada">
+            <strong id="m_destino"></strong>
+            <span>Llegada</span>
+        </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="info-bar">
+        <div><i class="fa-regular fa-clock"></i> 2h 30m</div>
+        <div><i class="fa-regular fa-calendar"></i> {{ fecha }}</div>
+        <div>FM | Turnos</div>
+    </div>
+
+    <!-- TERMINALES -->
+        <div class="terminal-item">
+        <i class="fa-solid fa-location-dot"></i>
+        <span id="m_salida"></span>
+    </div>
+
+    <div class="terminal-item">
+        <i class="fa-solid fa-flag-checkered"></i>
+        <span id="m_llegada"></span>
+    </div>
+    <!-- PRECIO + SERVICIOS -->
+    <div class="ticket-box">
+
+        <div class="ticket-header">
+            <i class="fa-solid fa-bus"></i>
+            <span>Precio del boleto:</span>
+        </div>
+
+        <div class="ticket-main">
+            <div>
+                <strong id="m_bs"></strong>
+                <small id="m_usd"></small>
+            </div>
+
+            <div class="usd-badge">
+                $ <span id="m_usd2"></span>
+            </div>
+        </div>
+
+        <div class="servicios">
+            <div><i class="fa-solid fa-chair"></i> Espacios reclinables</div>
+            <div><i class="fa-solid fa-snowflake"></i> Aire acondicionado</div>
+            <div><i class="fa-solid fa-tv"></i> Entretenimiento a bordo</div>
+        </div>
+
+    </div>
+
+   <form action="/comprar" method="POST">
+
+    <input type="hidden" name="origen" id="f_origen">
+    <input type="hidden" name="destino" id="f_destino">
+    <input type="hidden" name="fecha" id="f_fecha">
+    <input type="hidden" name="hora" id="f_hora">
+    <input type="hidden" name="pasajeros" id="f_pasajeros">
+
+    <button type="submit" class="btn-confirm">
+        Confirmar compra
+    </button>
+
+</form>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let viajeSeleccionado = {};
+
+function abrirModal(btn) {
+
+    viajeSeleccionado = {
+        origen: btn.dataset.origen,
+        destino: btn.dataset.destino,
+        hora: btn.dataset.hora,
+        salida: btn.dataset.salida,
+        llegada: btn.dataset.llegada,
+        bs: btn.dataset.bs,
+        usd: btn.dataset.usd
+    };
+
+    document.getElementById("m_origen").innerText = viajeSeleccionado.origen;
+    document.getElementById("m_destino").innerText = viajeSeleccionado.destino;
+
+    document.getElementById("m_salida").innerText = viajeSeleccionado.salida;
+    document.getElementById("m_llegada").innerText = viajeSeleccionado.llegada;
+    document.getElementById("f_origen").value = viajeSeleccionado.origen;
+    document.getElementById("f_destino").value = viajeSeleccionado.destino;
+    document.getElementById("f_fecha").value = "{{ fecha }}";
+    document.getElementById("f_hora").value = viajeSeleccionado.hora;
+    document.getElementById("f_pasajeros").value = "{{ pasajeros }}";
+    document.getElementById("m_bs").innerText = "Bs " + parseFloat(viajeSeleccionado.bs).toFixed(2);
+    document.getElementById("m_usd").innerText = "$ " + parseFloat(viajeSeleccionado.usd).toFixed(2);
+    document.getElementById("m_usd2").innerText = parseFloat(viajeSeleccionado.usd).toFixed(2);
+    
+
+    document.getElementById("modal").style.display = "flex";
+}
+
+function cerrarModal() {
+    document.getElementById("modal").style.display = "none";
+}
+
+</script>
+
+</body>
+</html>

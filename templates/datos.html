@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Busven - Compra</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+
+body{
+    font-family:'Segoe UI';
+    background:#f4f6f9;
+    margin:0;
+}
+
+/* ===== HEADER ===== */
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px 30px;
+    background:#fff;
+    border-bottom:1px solid #eee;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.logo{
+    font-weight:700;
+    font-size:22px;
+}
+.logo span{color:#22c55e;}
+
+.back{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f1f5f9;
+    cursor:pointer;
+}
+.back:hover{background:#e2e8f0;}
+
+.title{
+    display:flex;
+    flex-direction:column;
+}
+.title strong{font-size:16px;}
+.title span{
+    font-size:13px;
+    color:#64748b;
+}
+
+/* ===== LAYOUT CORRECTO ===== */
+.container{
+    display:grid;
+    grid-template-columns: 1fr 320px; /* balance real */
+    gap:40px;
+    padding:40px 20px;
+    max-width:1100px; /* ← clave */
+    margin:0 auto;
+}
+
+/* NO centrar la columna izquierda */
+.container > div:first-child{
+    max-width:none;
+    margin:0;
+}
+
+/* ===== INPUTS ===== */
+.input-group{
+    max-width:350px;
+}
+
+input,select{
+    width:100%;
+    padding:8px;
+    font-size:14px;
+    border-radius:6px;
+    border:1px solid #ddd;
+}
+
+/* fila cédula */
+.card div[style]{
+    max-width:350px !important;
+}
+
+/* ===== CARDS ===== */
+.card{
+    padding:15px;
+    margin-bottom:15px;
+    background:#fff;
+    border-radius:10px;
+}
+.card b i{
+    margin-right:6px;
+    color:#6b7280;
+    font-size:13px;
+}
+.card b{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+}
+
+/* ===== BOTONES ===== */
+.btn{
+    background:#22c55e;
+    color:#fff;
+    border:none;
+    padding:12px;
+    border-radius:8px;
+    width:100%;
+    cursor:pointer;
+    font-weight:600;
+}
+
+/* ===== PANEL DERECHO ===== */
+.right{
+    width:100%;
+}
+
+.summary{
+    background:linear-gradient(135deg,#1e3a8a,#4f46e5);
+    color:#fff;
+    padding:20px;
+    border-radius:14px;
+}
+
+.summary h3{margin:0 0 10px;}
+
+.amenities{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:10px;
+}
+
+.amenities div{
+    background:rgba(255,255,255,0.15);
+    padding:8px;
+    border-radius:8px;
+    font-size:13px;
+}
+
+/* ===== MODAL ===== */
+.modal{
+    position:fixed;
+    right:0;
+    top:0;
+    width:360px;
+    height:100%;
+    background:#fff;
+    box-shadow:-5px 0 15px rgba(0,0,0,0.1);
+    padding:20px;
+    display:none;
+}
+
+.tabs{
+    display:flex;
+    margin:10px 0;
+    gap:5px;
+}
+
+.tabs button{
+    flex:1;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#f1f5f9;
+}
+
+.tabs .active{
+    background:#22c55e;
+    color:#fff;
+}
+
+/* ===== BUS ===== */
+.bus{
+    width:260px;
+    margin:auto;
+    background:#d1d5db;
+    border-radius:140px 140px 40px 40px;
+    padding:25px 15px;
+    position:relative;
+    box-shadow:inset 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.bus::before{
+    content:"";
+    position:absolute;
+    top:10px;
+    left:50%;
+    transform:translateX(-50%);
+    width:80%;
+    height:35px;
+    background:#1f2937;
+    border-radius:10px;
+}
+
+.driver{
+    text-align:center;
+    font-size:11px;
+    color:#fff;
+    position:absolute;
+    top:18px;
+    left:0;
+    right:0;
+    font-weight:600;
+}
+
+.seat-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px;
+    margin-top:50px;
+}
+
+.seat{
+    border:2px solid #22c55e;
+    border-radius:8px;
+    text-align:center;
+    padding:8px 0;
+    font-size:12px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.seat:hover{
+    background:#dcfce7;
+}
+
+.occupied{
+    background:#9ca3af;
+    border:none;
+    color:#fff;
+    cursor:not-allowed;
+}
+
+.selected{
+    background:#22c55e;
+    color:#fff;
+}
+
+.aisle{
+    visibility:hidden;
+}
+
+.legend{
+    display:flex;
+    justify-content:space-around;
+    margin-top:10px;
+    font-size:12px;
+}
+.steps{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding:15px 10px;
+    background:#fff;
+    border-bottom:1px solid #eee;
+}
+.steps::before{
+    content:"";
+    position:absolute;
+    top:50%;
+    left:5%;
+    width:90%;
+    height:2px;
+    background:#e5e7eb;
+    z-index:0;
+}
+
+.step{
+    position:relative;
+    z-index:1;
+    padding:8px 14px;
+    border-radius:20px;
+    background:#e5e7eb;
+    font-size:13px;
+    color:#6b7280;
+    font-weight:500;
+}
+
+.step.active{
+    background:#22c55e;
+    color:#fff;
+}
+
+.step.done{
+    background:#bbf7d0;
+    color:#166534;
+}
+
+.legend span{
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.box{
+    width:15px;height:15px;border-radius:4px;
+}
+
+.av{border:2px solid #22c55e;}
+.oc{background:#9ca3af;}
+.se{background:#22c55e;}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px){
+    .container{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-left">
+        <div class="logo">Bus<span>ven</span></div>
+
+        <div class="back" onclick="goBack()">
+            <i class="fa fa-arrow-left"></i>
+        </div>
+
+        <div class="title">
+            <strong>Falta poco para tu viaje</strong>
+            <span>Completa tus datos para continuar</span>
+        </div>
+    </div>
+</div>
+
+<div class="steps">
+    <div class="step done">1. Ruta</div>
+    <div class="step done">2. Horario</div>
+    <div class="step active">3. Pasajeros</div>
+    <div class="step">4. Pago</div>
+</div>
+
+<div class="container">
+
+    <!-- IZQUIERDA -->
+    <div>
+
+        <form action="/pago" method="POST" onsubmit="return prepararPago()">
+
+            <!-- PASAJERO -->
+        <div class="card">
+            <b><i class="fa fa-user"></i> Pasajero</b>
+
+            <div style="margin-top:12px">
+                <input name="nombre[]" placeholder="Nombre completo">
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:10px">
+                <select style="width:80px">
+                    <option>V</option>
+                    <option>E</option>
+                    <option>P</option>
+                </select>
+
+                <input type="text" name="documento[]" placeholder="Cédula" required>
+            </div>
+        </div>
+
+            <!-- ASIENTOS -->
+            <div class="card" id="seatCard">
+                <b><i class="fa-solid fa-couch"></i> Asientos</b>
+                <button type="button" class="btn" onclick="openModal()">Seleccionar asientos</button>
+            </div>
+
+            <!-- CONTACTO -->
+            <div class="card">
+                <b><i class="fa fa-envelope"></i> Contacto</b>
+
+                <div style="margin-top:12px">
+                    <input name="correo" placeholder="Correo electrónico">
+                </div>
+            </div>
+            <!-- HIDDEN -->
+            <input type="hidden" name="origen" value="{{ origen }}">
+            <input type="hidden" name="destino" value="{{ destino }}">
+            <input type="hidden" name="fecha" value="{{ fecha }}">
+            <input type="hidden" name="hora" value="{{ hora }}">
+            <input type="hidden" name="pasajeros" value="{{ pasajeros }}">
+            <input type="hidden" name="asientos" id="asientosInput">
+
+            <!-- BOTON -->
+            <button class="btn" type="submit">
+                Pagar ahora
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- DERECHA -->
+    <div class="right">
+
+        <div class="summary">
+            <h3>Cúcuta → San Cristóbal</h3>
+            <p>07 May 2026 | 05:00 PM</p>
+
+            <div class="amenities">
+                <div><i class="fa fa-snowflake"></i> Aire</div>
+                <div><i class="fa fa-wifi"></i> Wifi</div>
+                <div><i class="fa fa-tv"></i> TV</div>
+                <div><i class="fa fa-toilet"></i> Baño</div>
+            </div>
+
+            <hr style="opacity:.2">
+
+            <h2>Bs 16.802</h2>
+            <small>≈ $35 USD</small>
+        </div>
+
+    </div>
+
+</div>
+<!-- MODAL -->
+<div class="modal" id="modal">
+
+<h3>Selecciona tus asientos</h3>
+
+<div class="tabs">
+    <button class="active" onclick="setFloor(1,this)">Piso inferior</button>
+    <button onclick="setFloor(2,this)">Piso superior</button>
+</div>
+
+<div class="bus">
+    <div class="driver">CONDUCTOR</div>
+    <div id="seats" class="seat-grid"></div>
+</div>
+
+<div class="legend">
+    <span><div class="box av"></div>Disponible</span>
+    <span><div class="box oc"></div>Ocupado</span>
+    <span><div class="box se"></div>Seleccionado</span>
+</div>
+
+<br>
+<button class="btn" onclick="confirmSeats()">Confirmar asientos</button>
+
+</div>
+
+<script>
+let floor=1;
+let selected=[];
+
+function setFloor(f,btn){
+    floor=f;
+
+    document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+
+    renderSeats();
+}
+
+function toggleSeat(n){
+    if([3,7,12,18].includes(n)) return;
+
+    if(selected.includes(n)){
+        selected=selected.filter(x=>x!==n);
+    }else{
+        selected.push(n);
+    }
+    renderSeats();
+}
+
+function renderSeats(){
+    const container=document.getElementById("seats");
+    container.innerHTML="";
+
+    let seats = floor === 1
+    ? [
+        41,42,0,43,0,
+        0,0,0,0,0,
+        44,45,0,46,0,
+        0,0,0,0,0,
+        47,48,0,49,0,
+        0,0,0,0,0,
+        50,51,0,52,0
+      ]
+    : [
+        1,2,0,4,3,
+        5,6,0,8,7,
+        9,10,0,0,0,
+        11,12,0,0,0,
+        13,14,0,15,16,
+        17,18,0,19,20,
+        21,22,0,23,24,
+        25,26,0,27,28,
+        29,30,0,31,32,
+        33,34,0,35,36,
+        37,38,0,39,40,
+      ];
+    seats.forEach(s=>{
+        let div=document.createElement("div");
+
+        if(s===0){
+            div.className="aisle";
+        }else{
+            div.className="seat";
+
+            const occupiedSeats = [3,7,12,18,45,50];
+
+            if(occupiedSeats.includes(s)){
+                div.classList.add("occupied");
+            }
+
+            if(selected.includes(s)){
+                div.classList.add("selected");
+            }
+
+            div.innerText=s;
+            div.onclick=()=>toggleSeat(s);
+        }
+
+        container.appendChild(div);
+    });
+}
+
+function openModal(){
+    document.getElementById("modal").style.display="block";
+}
+
+renderSeats();
+
+function confirmSeats(){
+    if(selected.length===0){
+        alert("Debes seleccionar al menos un asiento");
+        return;
+    }
+
+    // Mostrar en pantalla
+    document.getElementById("seatCard").innerHTML = `
+        <b><i class="fa fa-chair"></i> Asientos</b><br><br>
+        <p>Seleccionado: <strong>${selected.join(", ")}</strong></p>
+        <button class="btn" onclick="openModal()">Cambiar asientos</button>
+    `;
+
+    // cerrar modal
+    document.getElementById("modal").style.display="none";
+}
+function goBack(){
+    if(document.referrer){
+        window.history.back();
+    }else{
+        window.location.href = "/";
+    }
+} 
+document.querySelector("form[action='/pago']").addEventListener("submit", function(e){
+
+    if(selected.length === 0){
+        alert("Debes seleccionar al menos un asiento");
+        e.preventDefault();
+        return;
+    }
+
+    document.getElementById("asientosInput").value = selected.join(", ");
+
+    // 👇 IMPORTANTE: NO bloquees el submit
+});
+
+function prepararPago(){
+
+    const nombre = document.querySelector("input[name='nombre[]']").value;
+
+    if(nombre.trim() === ""){
+        alert("Ingresa tu nombre");
+        return false;
+    }
+
+    if(selected.length === 0){
+        alert("Selecciona asientos");
+        return false;
+    }
+
+    document.getElementById("asientosInput").value = selected.join(",");
+
+    return true;
+}
+</script>
+
+</body>
+</html>
