@@ -298,6 +298,7 @@ def confirmar_pago():
     fecha = request.form.get("fecha")
     hora = request.form.get("hora")
     pasajeros = request.form.get("pasajeros")
+
     asientos = request.form.get("asientos")
 
     nombres = request.form.getlist("nombre[]")
@@ -305,15 +306,31 @@ def confirmar_pago():
     correo = request.form.get("correo")
     metodo = request.form.get("metodo")
 
-    # 🔴 DEBUG (déjalo temporalmente)
     print("NOMBRES:", nombres)
     print("DOCUMENTOS:", documentos)
-    print("ASIENTOS:", asientos)
+    print("ASIENTOS RAW:", asientos)
+
+    # =========================
+    # 🔥 NORMALIZAR ASIENTOS
+    # =========================
+
+    # si viene como lista (ej: ["47","48"])
+    if isinstance(asientos, list):
+        asientos = ",".join(asientos)
+
+    # si viene vacío
+    if not asientos:
+        asientos = ""
 
     # 🛠️ CORRECCIÓN CLAVE: evitar desalineación
-    if len(documentos) != len(nombres):
-        documentos = documentos + [""] * (len(nombres) - len(documentos))
+    max_len = len(nombres)
 
+    nombres = nombres[:max_len]
+    documentos = documentos[:max_len]
+
+    if len(documentos) < max_len:
+        documentos += [""] * (max_len - len(documentos))
+        
     # TERMINALES
     salida_terminal = terminales.get(origen, f"Terminal de {origen}")
     llegada_terminal = terminales.get(destino, f"Terminal de {destino}")
@@ -361,6 +378,7 @@ def confirmar_pago():
                     correo,
                     origen,
                     destino,
+                    asientos,
                     fecha,
                     hora,
                     codigo
@@ -372,6 +390,7 @@ def confirmar_pago():
                 correo,
                 origen,
                 destino,
+                asientos,
                 fecha,
                 hora,
                 codigo
