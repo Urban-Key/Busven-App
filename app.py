@@ -53,19 +53,39 @@ def get_db():
 def init_db():
     conn = get_db()
     c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS boletos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT,
-            documento TEXT,
-            correo TEXT,
-            origen TEXT,
-            destino TEXT,
-            fecha TEXT,
-            hora TEXT,
-            codigo TEXT
-        )
-    ''')
+
+    if isinstance(conn, sqlite3.Connection):
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS boletos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nombre TEXT,
+                documento TEXT,
+                correo TEXT,
+                origen TEXT,
+                destino TEXT,
+                fecha TEXT,
+                hora TEXT,
+                codigo TEXT
+            )
+        ''')
+
+    else:
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS boletos (
+                id SERIAL PRIMARY KEY,
+                nombre TEXT,
+                documento TEXT,
+                correo TEXT,
+                origen TEXT,
+                destino TEXT,
+                fecha TEXT,
+                hora TEXT,
+                codigo TEXT
+            )
+        ''')
+
     conn.commit()
     conn.close()
 
